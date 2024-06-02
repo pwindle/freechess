@@ -30,8 +30,16 @@ router.post("/parse", async (req, res) => {
 
     // Create a virtual board
     let board = new Chess();
-    let positions: Position[] = [];
 
+    // Check for FEN header and initialize the board with it if it exists
+    if (parsedPGN.headers) {
+        const fenHeader = parsedPGN.headers.find(header => header.name === 'FEN');
+        if (fenHeader) {
+            board = new Chess(fenHeader.value);
+        }
+    }
+
+    let positions: Position[] = [];
     positions.push({ fen: board.fen() });
 
     // Add each move to the board; log FEN and SAN
